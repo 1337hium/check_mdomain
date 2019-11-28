@@ -2,6 +2,7 @@
 #########
 #
 # 04.10.2019 Michael Rüedi https://github.com/1337hium/check_mdomain
+# 28.11.2019 fixed KeyError if no cert is defined
 #
 #########
 import sys
@@ -16,8 +17,13 @@ else:
     with urllib.request.urlopen(url1) as url:
         data = json.loads(url.read().decode())
     for domain in data['managed-domains']:
-        date = domain["cert"]["valid-until"]
         name = domain["name"]
+        try:
+          date = domain["cert"]["valid-until"]
+        except KeyError:
+          crit2 = (name,' has no valid cerificate!')
+          crit3 = ''.join(map(str, crit2))
+          a.append(crit3)
         today = datetime.datetime.today()
         string = today.strftime('%Y-%m-%d')
         dt = datetime.datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
