@@ -39,4 +39,3 @@ else:
        sys.exit(2)
     else:
        print ("MDomains OK")
-
